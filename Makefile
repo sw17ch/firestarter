@@ -3,7 +3,7 @@ OPTIMIZE=-O4
 WARN=-Wall -Wextra -pedantic -Werror
 CFLAGS += -std=c99 -g ${WARN} ${OPTIMIZE}
 
-OBJECTS=tree.o
+OBJECTS=tree.o round_grid.o
 
 test_forestfire: test_forestfire.o ${OBJECTS}
 

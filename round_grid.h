@@ -9,4 +9,6 @@ struct round_grid {
   struct tree * trees;
 };
 
+void grid_init(struct round_grid * r, size_t w, size_t h, struct tree * ts);
+
 #endif /* round_grid_h */
