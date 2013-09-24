@@ -1,5 +1,19 @@
 #include "greatest.h"
+
 #include "tree.h"
+#include "configuration.h"
+
+TEST tree_initializes(void) {
+  struct tree t = { .condition = BURNT, .fuel_remaining = 10 };
+  struct configuration c = { .initial_fuel = 5 };
+
+  init_tree(&c, &t);
+
+  ASSERT_EQ(HEALTHY, t.condition);
+  ASSERT_EQ(5, t.fuel_remaining);
+
+  PASS();
+}
 
 TEST tree_burn_is_inert_if_not_burning(void) {
   struct tree t = { .condition = HEALTHY, .fuel_remaining = 10 };
@@ -37,12 +51,26 @@ TEST tree_burns_out_when_out_of_fuel(void) {
   PASS();
 }
 
+TEST tree_ignites(void) {
+  struct tree t = { .condition = HEALTHY, .fuel_remaining = 10 };
+  struct tree n = { .condition = HEALTHY, .fuel_remaining = 0 };
+
+  ignite_tree(&n, &t);
+
+  ASSERT_EQ(BURNING, n.condition);
+  ASSERT_EQ(10, n.fuel_remaining);
+
+  PASS();
+}
+
 /* Suite definition. */
 
 SUITE(tree) {
+  RUN_TEST(tree_initializes);
   RUN_TEST(tree_burn_is_inert_if_not_burning);
   RUN_TEST(tree_loses_fuel_if_burning);
   RUN_TEST(tree_burns_out_when_out_of_fuel);
+  RUN_TEST(tree_ignites);
 }
 
 GREATEST_MAIN_DEFS();
