@@ -1,3 +1,9 @@
+/*
+ * Usage:
+ *   clang -pedantic -std=c99 -Weverything -Werror -O3 -DWIDTH=500 -DHEIGHT=500 forestfire.c -o forestfire
+ *   ./forestfire
+ */
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
