@@ -2,6 +2,7 @@
 #define condition_h
 
 enum condition {
+  INVALID,
   HEALTHY,
   BURNING,
   BURNT,
