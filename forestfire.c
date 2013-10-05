@@ -9,44 +9,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define IGNORE(V) (void)(V)
-#define IX(X,Y,WIDTH) ((X) + ((WIDTH) * (Y)))
-
-#define DIR_IX_NW(X,Y,WIDTH) IX((X) - 1, (Y) - 1, (WIDTH))
-#define DIR_IX_N(X,Y,WIDTH)  IX((X)    , (Y) - 1, (WIDTH))
-#define DIR_IX_NE(X,Y,WIDTH) IX((X) + 1, (Y) - 1, (WIDTH))
-
-#define DIR_IX_W(X,Y,WIDTH)  IX((X) - 1, (Y)    , (WIDTH))
-#define DIR_IX_E(X,Y,WIDTH)  IX((X) + 1, (Y)    , (WIDTH))
-
-#define DIR_IX_SW(X,Y,WIDTH) IX((X) - 1, (Y) + 1, (WIDTH))
-#define DIR_IX_S(X,Y,WIDTH)  IX((X)    , (Y) + 1, (WIDTH))
-#define DIR_IX_SE(X,Y,WIDTH) IX((X) + 1, (Y) + 1, (WIDTH))
-
-#define ONE_IF_EQ(T,E) ((T) == (E) ? 1 : 0)
-
-enum tree_state {
-  tree_invalid = 0,
-  tree_healthy = 1,
-  tree_burning = 2,
-  tree_burnt   = 3,
-};
-
-struct neighbors {
-  enum tree_state nw;
-  enum tree_state n;
-  enum tree_state ne;
-
-  enum tree_state w;
-  // self
-  enum tree_state e;
-
-  enum tree_state sw;
-  enum tree_state s;
-  enum tree_state se;
-};
-
-typedef uint32_t (random_source)(uint32_t);
+#include "macros.h"
+#include "foresttypes.h"
+#include "plot.h"
 
 void print_neighbors(struct neighbors * ns);
 
@@ -184,7 +149,7 @@ static void simulate_tree(enum tree_state * tree_dst,
       break;
     case tree_burning:
       /* If the tree is burning, we have a 1/3 chance to burn out. */
-      if (fn(4) == 0) {
+      if (fn(3) == 0) {
         *tree_dst = tree_burnt;
       }
       break;
@@ -259,6 +224,7 @@ int main(int argc, char * argv[]) {
   } while (count > 0);
 
   printf("Healthy: %u\n", count_state(next, WIDTH, HEIGHT, tree_healthy));
+  draw_forest(current, WIDTH, HEIGHT);
 
   return 0;
 }
