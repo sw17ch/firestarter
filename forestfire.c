@@ -213,9 +213,13 @@ int main(int argc, char * argv[]) {
   enum tree_state * next = (enum tree_state *)ForestB;
   uint32_t count = 0;
 
+  draw_forest(next, WIDTH, HEIGHT);
+
   do {
     simulate_forest(next, current, WIDTH, HEIGHT, gen_rand);
     count = count_state(next, WIDTH, HEIGHT, tree_burning);
+    draw_forest(next, WIDTH, HEIGHT);
+
     printf("Burning: %u\n", count);
 
     enum tree_state * t = current;
@@ -224,7 +228,6 @@ int main(int argc, char * argv[]) {
   } while (count > 0);
 
   printf("Healthy: %u\n", count_state(next, WIDTH, HEIGHT, tree_healthy));
-  draw_forest(current, WIDTH, HEIGHT);
 
   return 0;
 }
