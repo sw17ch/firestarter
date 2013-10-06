@@ -29,6 +29,9 @@
   #define HEIGHT (100)
 #endif
 
+/* #define DRAW_IMAGES */
+/* #define NOISY */
+
 void print_neighbors(struct neighbors * ns);
 
 static void init_forest(enum tree_state * forest, size_t width, size_t height, enum tree_state state);
