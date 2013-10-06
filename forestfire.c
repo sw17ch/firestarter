@@ -50,52 +50,21 @@ static void simulate_forest(enum tree_state * forest_dst,
 
   struct neighbors ns;
 
-  for (size_t x = 0; x < width; x++) {
-    for (size_t y = 0; y < height; y++) {
+  /* Leave a 1px border to avoid having to boundscheck each pixel. */
+  for (size_t x = 1; x < (width - 1); x++) {
+    for (size_t y = 1; y < (height - 1); y++) {
       size_t ix = IX(x,y,width);
 
-      if (0 == x || 0 == y) {
-        ns.nw = tree_invalid;
-      } else {
-        ns.nw = forest_src[DIR_IX_NW(x,y,width)];
-      }
-      if (0 == y) {
-        ns.n = tree_invalid;
-      } else {
-        ns.n = forest_src[DIR_IX_N(x,y,width)];
-      }
-      if ((width - 1) == x || 0 == y) {
-        ns.ne = tree_invalid;
-      } else {
-        ns.ne = forest_src[DIR_IX_NE(x,y,width)];
-      }
+      ns.nw = forest_src[DIR_IX_NW(x,y,width)];
+      ns.n = forest_src[DIR_IX_N(x,y,width)];
+      ns.ne = forest_src[DIR_IX_NE(x,y,width)];
 
-      if (0 == x) {
-        ns.w = tree_invalid;
-      } else {
-        ns.w = forest_src[DIR_IX_W(x,y,width)];
-      }
-      if ((width - 1) == x) {
-        ns.e = tree_invalid;
-      } else {
-        ns.e = forest_src[DIR_IX_E(x,y,width)];
-      }
+      ns.w = forest_src[DIR_IX_W(x,y,width)];
+      ns.e = forest_src[DIR_IX_E(x,y,width)];
 
-      if (0 == x || (height - 1) == y) {
-        ns.sw = tree_invalid;
-      } else {
-        ns.sw = forest_src[DIR_IX_SW(x,y,width)];
-      }
-      if ((height - 1) == y) {
-        ns.s = tree_invalid;
-      } else {
-        ns.s = forest_src[DIR_IX_S(x,y,width)];
-      }
-      if ((width - 1) == x || (height - 1) == y) {
-        ns.se = tree_invalid;
-      } else {
-        ns.se = forest_src[DIR_IX_SE(x,y,width)];
-      }
+      ns.sw = forest_src[DIR_IX_SW(x,y,width)];
+      ns.s = forest_src[DIR_IX_S(x,y,width)];
+      ns.se = forest_src[DIR_IX_SE(x,y,width)];
 
       simulate_tree(
           &forest_dst[ix],
