@@ -202,17 +202,17 @@ int main(int argc, char * argv[]) {
   IGNORE(argc);
   IGNORE(argv);
 
-  /* Setup both buffers. */
-  init_forest((enum tree_state *)ForestA, WIDTH, HEIGHT, tree_healthy);
-  init_forest((enum tree_state *)ForestB, WIDTH, HEIGHT, tree_invalid);
-
-  /* Light a tree in buffer A on fire. */
-  ForestA[WIDTH / 2][HEIGHT / 2] = tree_burning;
-
   enum tree_state * current = (enum tree_state *)ForestA;
   enum tree_state * next = (enum tree_state *)ForestB;
-  uint32_t count = 0;
 
+  /* Setup both buffers. */
+  init_forest(current, WIDTH, HEIGHT, tree_healthy);
+  init_forest(next, WIDTH, HEIGHT, tree_invalid);
+
+  /* Light a tree in buffer A on fire. */
+  current[IX(WIDTH / 2, HEIGHT / 2, WIDTH)] = tree_burning;
+
+  uint32_t count = 0;
   draw_forest(next, WIDTH, HEIGHT);
 
   do {
