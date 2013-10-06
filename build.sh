@@ -1,3 +1,14 @@
 #!/bin/bash
 
-clang -Wall -Wextra -O3 plot.c forestfire.c `pkg-config --cflags --libs MagickCore` -DWIDTH=800 -DHEIGHT=600 -o forestfire
+CFILES="plot.c forestfire.c"
+CFLAGS="-Wall -Wextra -O3 "
+IMAGEMAGIC_FLAGS=`pkg-config --cflags --libs MagickCore`
+
+PROG="forestfire"
+
+clang ${CFLAGS} ${CFILES} ${IMAGEMAGIC_FLAGS} \
+  -DWIDTH=800 \
+  -DHEIGHT=600 \
+  -DDRAW_IMAGES \
+  -DNOISY \
+  -o ${PROG}
