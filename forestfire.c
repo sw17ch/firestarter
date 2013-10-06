@@ -32,8 +32,6 @@
 /* #define DRAW_IMAGES */
 /* #define NOISY */
 
-void print_neighbors(struct neighbors * ns);
-
 static void init_forest(enum tree_state * forest, size_t width, size_t height, enum tree_state state);
 static void simulate_forest(enum tree_state * forest_dst,
                             const enum tree_state * forest_src,
@@ -147,16 +145,6 @@ static void simulate_tree(enum tree_state * tree_dst,
 
 static uint32_t gen_rand(uint32_t max) {
   return arc4random_uniform(max);
-}
-
-void print_neighbors(struct neighbors * ns) {
-  printf(
-      "<%d><%d><%d>\n"
-      "<%d><!><%d>\n"
-      "<%d><%d><%d>\n",
-      ns->nw, ns->n, ns->ne,
-      ns->w, ns->e,
-      ns->sw, ns->s, ns->se);
 }
 
 static uint32_t neighbors_burning(struct neighbors * ns) {

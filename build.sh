@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CFILES="plot.c forestfire.c"
+CFILES="plot.c forestfire.c util.c"
 CFLAGS="-Wall -Wextra -O3 "
 IMAGEMAGIC_FLAGS=`pkg-config --cflags --libs MagickCore`
 
