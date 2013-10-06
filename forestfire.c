@@ -149,7 +149,7 @@ static void simulate_tree(enum tree_state * tree_dst,
       break;
     case tree_burning:
       /* If the tree is burning, we have a 1/3 chance to burn out. */
-      if (fn(3) == 0) {
+      if (fn(4) == 0) {
         *tree_dst = tree_burnt;
       }
       break;
