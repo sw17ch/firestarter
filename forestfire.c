@@ -13,6 +13,22 @@
 #include "foresttypes.h"
 #include "plot.h"
 
+#ifndef BURNOUT_FACTOR 
+  #define BURNOUT_FACTOR (4)
+#endif
+
+#ifndef IGNITE_FACTOR 
+  #define IGNITE_FACTOR (10)
+#endif
+
+#ifndef WIDTH
+  #define WIDTH (100)
+#endif
+
+#ifndef HEIGHT
+  #define HEIGHT (100)
+#endif
+
 void print_neighbors(struct neighbors * ns);
 
 static void init_forest(enum tree_state * forest, size_t width, size_t height, enum tree_state state);
@@ -33,11 +49,9 @@ static uint32_t neighbors_burning(struct neighbors * ns);
 
 
 static void init_forest(enum tree_state * forest, size_t width, size_t height, enum tree_state state) {
-
   for (size_t x = 0; x < width; x++) {
     for (size_t y = 0; y < height; y++) {
       size_t ix = x + (width * y);
-
       forest[ix] = state;
     }
   }
@@ -78,10 +92,10 @@ static void simulate_forest(enum tree_state * forest_dst,
 static uint32_t count_state(enum tree_state * forest, size_t width, size_t height, enum tree_state state) {
   uint32_t sum = 0;
 
-  for (size_t x = 0; x < width; x++) {
-    for (size_t y = 0; y < height; y++) {
+  /* Only count the state of the interior cells; not the border cells. */
+  for (size_t x = 1; x < (width - 1); x++) {
+    for (size_t y = 1; y < (height - 1); y++) {
       size_t ix = IX(x,y,width);
-
       if (forest[ix] == state) {
         sum += 1;
       }
@@ -108,7 +122,7 @@ static void simulate_tree(enum tree_state * tree_dst,
         const uint32_t burn_count = neighbors_burning(ns);
         if (burn_count > 0) {
           /* This tree might catch fire! */
-          const uint32_t roll = fn(10);
+          const uint32_t roll = fn(IGNITE_FACTOR);
 
           if (roll < burn_count) {
             *tree_dst = tree_burning;
@@ -118,7 +132,7 @@ static void simulate_tree(enum tree_state * tree_dst,
       break;
     case tree_burning:
       /* If the tree is burning, we have a 1/3 chance to burn out. */
-      if (fn(4) == 0) {
+      if (fn(BURNOUT_FACTOR) == 0) {
         *tree_dst = tree_burnt;
       }
       break;
@@ -156,14 +170,6 @@ static uint32_t neighbors_burning(struct neighbors * ns) {
 
 /* Aaand, go! */
 
-#ifndef WIDTH
-  #define WIDTH (100)
-#endif
-
-#ifndef HEIGHT
-  #define HEIGHT (100)
-#endif
-
 static enum tree_state ForestA[WIDTH][HEIGHT];
 static enum tree_state ForestB[WIDTH][HEIGHT];
 
@@ -176,20 +182,24 @@ int main(int argc, char * argv[]) {
 
   /* Setup both buffers. */
   init_forest(current, WIDTH, HEIGHT, tree_healthy);
-  init_forest(next, WIDTH, HEIGHT, tree_invalid);
+  init_forest(next, WIDTH, HEIGHT, tree_healthy);
 
   /* Light a tree in buffer A on fire. */
   current[IX(WIDTH / 2, HEIGHT / 2, WIDTH)] = tree_burning;
 
   uint32_t count = 0;
-  draw_forest(next, WIDTH, HEIGHT);
 
   do {
     simulate_forest(next, current, WIDTH, HEIGHT, gen_rand);
     count = count_state(next, WIDTH, HEIGHT, tree_burning);
-    draw_forest(next, WIDTH, HEIGHT);
 
+#ifdef DRAW_IMAGES
+    draw_forest(next, WIDTH, HEIGHT);
+#endif
+
+#ifdef NOISY
     printf("Burning: %u\n", count);
+#endif
 
     enum tree_state * t = current;
     current = next;
